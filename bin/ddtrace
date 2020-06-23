@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+require 'pry'
+require 'ddtrace/tasks/help'
+
+command = ARGV.shift
+
+case command
+when 'exec'
+  require 'ddtrace/tasks/exec'
+  Datadog::Tasks::Exec.new(ARGV).run
+  profiling_preload = '-rddtrace/profiling/preload'
+  if ENV.key?('RUBYOPT')
+    ENV['RUBYOPT'] += " #{profiling_preload}"
+  else
+    ENV['RUBYOPT'] = profiling_preload
+  end
+
+  Kernel.exec(*ARGV)
+when 'help', '--help'
+  Datadog::Tasks::Help.new.run
+else
+  puts "Command '#{command}' is not valid for ddtrace."
+  Datadog::Tasks::Help.new.run
+end
