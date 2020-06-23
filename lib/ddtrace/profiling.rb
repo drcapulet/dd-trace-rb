@@ -22,6 +22,7 @@ module Datadog
       require 'ddtrace/profiling/scheduler'
       require 'ddtrace/profiling/tasks/setup'
       require 'ddtrace/profiling/transport/io'
+      require 'ddtrace/profiling/transport/http'
 
       require 'ddtrace/profiling/pprof/pprof_pb' if google_protobuf_supported?
     end
