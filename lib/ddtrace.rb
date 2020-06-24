@@ -14,6 +14,7 @@ require 'ddtrace/quantization/hash'
 require 'ddtrace/quantization/http'
 require 'ddtrace/pipeline'
 require 'ddtrace/configuration'
+require 'ddtrace/configuration_logger' # TODO: maybe move this somewhere else?
 require 'ddtrace/patcher'
 require 'ddtrace/augmentation'
 require 'ddtrace/metrics'
