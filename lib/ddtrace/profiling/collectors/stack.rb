@@ -13,6 +13,7 @@ module Datadog
         DEFAULT_MAX_FRAMES = 128
         DEFAULT_MAX_TIME_USAGE_PCT = 2.0
         MIN_INTERVAL = 0.01
+        THREAD_LAST_CPU_TIME_KEY = :datadog_profiler_last_cpu_time
 
         attr_reader \
           :ignore_thread,
@@ -101,8 +102,25 @@ module Datadog
             locations,
             stack_size,
             thread.object_id,
+            get_cpu_time_interval!(thread),
             wall_time_interval_ns
           )
+        end
+
+        def get_cpu_time_interval!(thread)
+          # Return if we can't get the current CPU time
+          return unless thread.respond_to?(:cpu_time)
+          current_cpu_time_ns = thread.cpu_time(:nanosecond)
+          return unless current_cpu_time_ns
+
+          last_cpu_time_ns = (thread[THREAD_LAST_CPU_TIME_KEY] || current_cpu_time_ns)
+          interval = current_cpu_time_ns - last_cpu_time_ns
+
+          # Update CPU time for thread
+          thread[THREAD_LAST_CPU_TIME_KEY] = current_cpu_time_ns
+
+          # Return interval
+          interval
         end
 
         def compute_wait_time(used_time)
