@@ -8,9 +8,9 @@ module Datadog
       module IO
         # Profiling extensions for IO client
         class Client < Datadog::Transport::IO::Client
-          def send_flushes(flushes)
+          def send_profiling_flush(flush)
             # Build a request
-            request = Profiling::Transport::Request.new(flushes)
+            request = Profiling::Transport::Request.new(flush)
             send_request(request)
           end
 

@@ -12,15 +12,15 @@ module Datadog
             super(apis[default_api])
           end
 
-          def send_flushes(flushes)
+          def send_profiling_flush(flush)
             # Build a request
-            request = Profiling::Transport::Request.new(flushes)
+            request = Profiling::Transport::Request.new(flush)
             send_payload(request)
           end
 
           def send_payload(request)
             send_request(request) do |api, env|
-              api.send_flushes(env)
+              api.send_profiling_flush(env)
             end
           end
         end

@@ -15,8 +15,8 @@ module Datadog
         @transport = transport
       end
 
-      def export(flushes)
-        transport.send_flushes(flushes)
+      def export(flush)
+        transport.send_profiling_flush(flush)
       end
     end
   end

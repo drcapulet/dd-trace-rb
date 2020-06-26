@@ -12,17 +12,12 @@ RSpec.describe 'Datadog::Profiling::Transport::HTTP integration tests' do
     let(:client_options) { proc { |_client| } }
     it { is_expected.to be_a(Datadog::Profiling::Transport::HTTP::Client) }
 
-    describe '#send_flushes' do
-      subject(:responses) { transport.send_flushes(flushes) }
-      let(:flushes) { get_test_profiling_flushes }
-
-      before { skip 'Test not ready.' }
+    describe '#send_profiling_flush' do
+      subject(:response) { transport.send_profiling_flush(flush) }
+      let(:flush) { get_test_profiling_flush }
 
       it do
-        is_expected.to all(be_a(Datadog::Profiling::Transport::HTTP::Response))
-
-        expect(responses).to have(1).item
-        response = responses.first
+        is_expected.to be_a(Datadog::Profiling::Transport::HTTP::Response)
         expect(response.ok?).to be true
       end
     end

@@ -1,4 +1,5 @@
 require 'ddtrace/transport/response'
+require 'ddtrace/vendor/multipart-post/net/http/post/multipart'
 
 module Datadog
   module Transport
@@ -11,7 +12,7 @@ module Datadog
             :port,
             :timeout
 
-          DEFAULT_TIMEOUT = 1
+          DEFAULT_TIMEOUT = 60
 
           def initialize(hostname, port, options = {})
             @hostname = hostname
@@ -35,8 +36,18 @@ module Datadog
           end
 
           def post(env)
-            post = ::Net::HTTP::Post.new(env.path, env.headers)
-            post.body = env.body
+            post = nil
+
+            if env.form.empty?
+              post = ::Net::HTTP::Post.new(env.path, env.headers)
+              post.body = env.body
+            else
+              post = ::Datadog::Vendor::Net::HTTP::Post::Multipart.new(
+                env.path,
+                env.form,
+                env.headers
+              )
+            end
 
             # Connect and send the request
             http_response = open do |http|
