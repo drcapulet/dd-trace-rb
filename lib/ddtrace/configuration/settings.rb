@@ -3,6 +3,7 @@ require 'ddtrace/configuration/base'
 
 require 'ddtrace/ext/analytics'
 require 'ddtrace/ext/distributed'
+require 'ddtrace/ext/profiling'
 require 'ddtrace/ext/runtime'
 require 'ddtrace/ext/sampling'
 
@@ -29,6 +30,10 @@ module Datadog
           # TODO: Raise deprecation warning
           get_option(:analytics).enabled = value
         end
+      end
+
+      option :api_key do
+        o.default { ENV.fetch(Ext::Environment::ENV_API_KEY, nil) }
       end
 
       settings :diagnostics do
@@ -86,6 +91,44 @@ module Datadog
         get_option(:logger).instance = logger
       end
 
+      settings :profiling do
+        option :enabled do |o|
+          o.default { ENV.fetch(Ext::Profiling::ENV_ENABLED, false) }
+          o.lazy
+        end
+
+        option :ignore_profiler do |o|
+          o.default { env_to_bool(Ext::Profiling::ENV_IGNORE_PROFILER, false) }
+          o.lazy
+        end
+
+        settings :stack do
+          option :max_frames do |o|
+            o.default { env_to_int(Ext::Profiling::ENV_MAX_FRAMES, 128) }
+            o.lazy
+          end
+
+          option :max_time_usage_pct do |o|
+            o.setter { |value| value.nil? ? value : value.to_f }
+            o.default { env_to_float(Ext::Profiling::ENV_MAX_TIME_USAGE_PCT, 2.0) }
+            o.lazy
+          end
+        end
+
+        option :upload_interval do |o|
+          o.default { env_to_float(Ext::Profiling::ENV_UPLOAD_INTERVAL, 60.0) }
+          o.lazy
+        end
+
+        option :upload_timeout do |o|
+          o.default { env_to_float(Ext::Profiling::ENV_UPLOAD_TIMEOUT, 30.0) }
+          o.lazy
+        end
+
+        # TODO: Add transport options?
+        #       Adapter/host/port/site?
+      end
+
       option :report_hostname do |o|
         o.default { env_to_bool(Ext::NET::ENV_REPORT_HOSTNAME, false) }
         o.lazy
@@ -135,6 +178,11 @@ module Datadog
 
       option :service do |o|
         o.default { ENV.fetch(Ext::Environment::ENV_SERVICE, nil) }
+        o.lazy
+      end
+
+      option :site do |o|
+        o.default { ENV.fetch(Ext::Environment::ENV_SITE, nil) }
         o.lazy
       end
 

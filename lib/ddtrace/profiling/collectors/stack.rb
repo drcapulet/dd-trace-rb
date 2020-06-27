@@ -23,9 +23,9 @@ module Datadog
 
         def initialize(recorder, options = {})
           @recorder = recorder
-          @max_frames = options.fetch(:max_frames, DEFAULT_MAX_FRAMES)
-          @ignore_thread = options.fetch(:ignore_thread, nil)
-          @max_time_usage_pct = options.fetch(:max_time_usage_pct, DEFAULT_MAX_TIME_USAGE_PCT)
+          @max_frames = options[:max_frames] || DEFAULT_MAX_FRAMES
+          @ignore_thread = options[:ignore_thread]
+          @max_time_usage_pct = options[:max_time_usage_pct] || DEFAULT_MAX_TIME_USAGE_PCT
 
           # Workers::Async::Thread settings
           # Restart in forks by default
