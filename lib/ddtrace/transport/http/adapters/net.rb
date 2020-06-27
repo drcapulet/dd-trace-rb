@@ -51,6 +51,7 @@ module Datadog
 
             # Connect and send the request
             http_response = open do |http|
+              # binding.pry
               http.request(post)
             end
 

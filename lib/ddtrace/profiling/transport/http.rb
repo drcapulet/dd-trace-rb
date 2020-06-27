@@ -59,15 +59,16 @@ module Datadog
 
         def default_headers
           {
-            Datadog::Ext::Transport::HTTP::HEADER_META_LANG => Datadog::Ext::Runtime::LANG,
-            Datadog::Ext::Transport::HTTP::HEADER_META_LANG_VERSION => Datadog::Ext::Runtime::LANG_VERSION,
-            Datadog::Ext::Transport::HTTP::HEADER_META_LANG_INTERPRETER => Datadog::Ext::Runtime::LANG_INTERPRETER,
-            Datadog::Ext::Transport::HTTP::HEADER_META_TRACER_VERSION => Datadog::Ext::Runtime::TRACER_VERSION
+            'DD-API-KEY' => 'abc'
+            # Datadog::Ext::Transport::HTTP::HEADER_META_LANG => Datadog::Ext::Runtime::LANG,
+            # Datadog::Ext::Transport::HTTP::HEADER_META_LANG_VERSION => Datadog::Ext::Runtime::LANG_VERSION,
+            # Datadog::Ext::Transport::HTTP::HEADER_META_LANG_INTERPRETER => Datadog::Ext::Runtime::LANG_INTERPRETER,
+            # Datadog::Ext::Transport::HTTP::HEADER_META_TRACER_VERSION => Datadog::Ext::Runtime::TRACER_VERSION
           }.tap do |headers|
             # Add container ID, if present.
             container_id = Datadog::Runtime::Container.container_id
             unless container_id.nil?
-              headers[Datadog::Ext::Transport::HTTP::HEADER_CONTAINER_ID] = container_id
+              # headers[Datadog::Ext::Transport::HTTP::HEADER_CONTAINER_ID] = container_id
             end
           end
         end

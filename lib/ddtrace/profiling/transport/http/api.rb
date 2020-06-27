@@ -112,26 +112,29 @@ module Datadog
               pprof = build_pprof(flush)
 
               form = {
-                FORM_FIELD_RUNTIME_ID => flush.runtime_id,
+                # FORM_FIELD_RUNTIME_ID => flush.runtime_id,
                 FORM_FIELD_RECORDING_START => flush.start.utc.iso8601,
                 FORM_FIELD_RECORDING_END => flush.finish.utc.iso8601,
-                FORM_FIELD_RUNTIME => flush.runtime,
-                FORM_FIELD_FORMAT => FORM_FIELD_FORMAT_PPROF,
-                FORM_FIELD_TYPE => FORM_FIELD_TYPE_CPU_TIME_WALL_TIME,
-                FORM_FIELD_CHUNK_DATA => pprof,
+                # FORM_FIELD_TYPE => FORM_FIELD_TYPE_CPU_TIME_WALL_TIME,
                 FORM_FIELD_TAGS => [
-                  "#{FORM_FIELD_TAG_RUNTIME}:#{flush.runtime}",
-                  "#{FORM_FIELD_TAG_RUNTIME_VERSION}:#{flush.runtime_version}",
-                  "#{FORM_FIELD_TAG_PROFILER_VERSION}:#{flush.profiler_version}",
+                  # "#{FORM_FIELD_TAG_RUNTIME}:#{flush.runtime}",
+                  # "#{FORM_FIELD_TAG_RUNTIME_VERSION}:#{flush.runtime_version}",
+                  # "#{FORM_FIELD_TAG_PROFILER_VERSION}:#{flush.profiler_version}",
+                  "#{FORM_FIELD_TAG_SERVICE}:my-service",
                   "#{FORM_FIELD_TAG_LANGUAGE}:#{flush.language}",
-                  "#{FORM_FIELD_TAG_HOST}:#{flush.host}",
-                ]
+                  # "#{FORM_FIELD_TAG_HOST}:#{flush.host}",
+                ],
+                'data[0]' => pprof,
+                'types[0]' => 'cpu-time',
+                FORM_FIELD_RUNTIME => flush.runtime,
+                FORM_FIELD_FORMAT => FORM_FIELD_FORMAT_PPROF
               }
 
               # Optional fields
-              form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_SERVICE}:#{flush.service}" unless flush.service.nil?
-              form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_ENV}:#{flush.env}" unless flush.env.nil?
-              form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_VERSION}:#{flush.version}" unless flush.version.nil?
+              # form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_SERVICE}:my-service"
+              # form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_SERVICE}:#{flush.service}" unless flush.service.nil?
+              # form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_ENV}:#{flush.env}" unless flush.env.nil?
+              # form[FORM_FIELD_TAGS] << "#{FORM_FIELD_TAG_VERSION}:#{flush.version}" unless flush.version.nil?
 
               form
             end

@@ -109,6 +109,8 @@ services:
     environment:
       - BUNDLE_GEMFILE=/app/Gemfile
       - DD_AGENT_HOST=ddagent
+      # - DD_AGENT_HOST=192.168.64.10
+      # - DD_TRACE_AGENT_PORT=1234
       - TEST_DATADOG_INTEGRATION=1
       - TEST_ELASTICSEARCH_HOST=elasticsearch
       - TEST_MEMCACHED_HOST=memcached
@@ -124,6 +126,16 @@ services:
       - .:/app
       - bundle-2.3:/usr/local/bundle
       - gemfiles-2.3:/app/gemfiles
+  capture:
+    image: palazzem/docker-library:ddtrace_rb_2_3_8
+    command: rackup -p 1234 -o 0.0.0.0
+    volumes:
+      - ./lib/capture:/app
+      - bundle-capture:/usr/local/bundle
+    expose:
+      - "1234"
+    ports:
+      - "1234:1234"
   tracer-2.4:
     image: palazzem/docker-library:ddtrace_rb_2_4_6
     command: /bin/bash
@@ -368,3 +380,4 @@ volumes:
   gemfiles-2.6:
   gemfiles-2.7:
   gemfiles-jruby-9.2:
+  bundle-capture:
