@@ -32,7 +32,7 @@ module Datadog
         end
       end
 
-      option :api_key do
+      option :api_key do |o|
         o.default { ENV.fetch(Ext::Environment::ENV_API_KEY, nil) }
       end
 
@@ -92,17 +92,13 @@ module Datadog
       end
 
       settings :profiling do
-        option :enabled do |o|
-          o.default { ENV.fetch(Ext::Profiling::ENV_ENABLED, false) }
-          o.lazy
-        end
+        settings :cpu do
+          option :enabled, default: true
+          option :ignore_profiler do |o|
+            o.default { env_to_bool(Ext::Profiling::ENV_IGNORE_PROFILER, false) }
+            o.lazy
+          end
 
-        option :ignore_profiler do |o|
-          o.default { env_to_bool(Ext::Profiling::ENV_IGNORE_PROFILER, false) }
-          o.lazy
-        end
-
-        settings :stack do
           option :max_frames do |o|
             o.default { env_to_int(Ext::Profiling::ENV_MAX_FRAMES, 128) }
             o.lazy
@@ -115,18 +111,27 @@ module Datadog
           end
         end
 
+        option :enabled do |o|
+          o.default { ENV.fetch(Ext::Profiling::ENV_ENABLED, false) }
+          o.lazy
+        end
+
+        settings :exporter do
+          option :instances
+          option :transport
+          option :transport_options, default: ->(_o) { {} }, lazy: true
+          option :timeout do |o|
+            o.default { env_to_float(Ext::Profiling::ENV_UPLOAD_TIMEOUT, 30.0) }
+            o.lazy
+          end
+        end
+
+        option :max_events, default: 32768
+
         option :upload_interval do |o|
           o.default { env_to_float(Ext::Profiling::ENV_UPLOAD_INTERVAL, 60.0) }
           o.lazy
         end
-
-        option :upload_timeout do |o|
-          o.default { env_to_float(Ext::Profiling::ENV_UPLOAD_TIMEOUT, 30.0) }
-          o.lazy
-        end
-
-        # TODO: Add transport options?
-        #       Adapter/host/port/site?
       end
 
       option :report_hostname do |o|

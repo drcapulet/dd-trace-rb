@@ -39,7 +39,9 @@ module Datadog
               if options.key?(:hostname) || options.key?(:port)
                 hostname = options.fetch(:hostname, default_hostname)
                 port = options.fetch(:port, default_port)
-                transport.adapter :net_http, hostname, port
+                adapter_options = {}
+                adapter_options[:timeout] = options[:timeout] if options.key?(:timeout)
+                transport.adapter :net_http, hostname, port, adapter_options
               end
 
               # Change default API

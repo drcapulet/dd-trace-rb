@@ -8,7 +8,7 @@ module Datadog
         :transport
 
       def initialize(transport)
-        unless transport.is_a?(Profiling::Transport::IO::Client)
+        unless transport.is_a?(Profiling::Transport::Client)
           raise ArgumentError, 'Unsupported transport for profiling exporter.'
         end
 

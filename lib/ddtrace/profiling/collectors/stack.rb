@@ -29,13 +29,13 @@ module Datadog
 
           # Workers::Async::Thread settings
           # Restart in forks by default
-          self.fork_policy = options.fetch(:fork_policy, Workers::Async::Thread::FORK_POLICY_RESTART)
+          self.fork_policy = options[:fork_policy] || Workers::Async::Thread::FORK_POLICY_RESTART
 
           # Workers::IntervalLoop settings
-          self.loop_base_interval = options.fetch(:interval, MIN_INTERVAL)
+          self.loop_base_interval = options[:interval] || MIN_INTERVAL
 
           # Workers::Polling settings
-          self.enabled = options.fetch(:enabled, false)
+          self.enabled = options.fetch(:enabled) ? options[:enabled] == true : false
         end
 
         def start

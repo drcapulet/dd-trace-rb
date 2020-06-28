@@ -1,4 +1,5 @@
 require 'ddtrace/transport/http/client'
+require 'ddtrace/profiling/transport/client'
 
 module Datadog
   module Profiling
@@ -6,6 +7,8 @@ module Datadog
       module HTTP
         # Routes, encodes, and sends tracer data to the trace agent via HTTP.
         class Client < Datadog::Transport::HTTP::Client
+          include Transport::Client
+
           # TODO: Consolidate API implementation with Datadog::Transport
           #       Just use :default_api for now.
           def initialize(apis, default_api)
