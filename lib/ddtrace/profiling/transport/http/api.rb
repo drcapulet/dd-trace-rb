@@ -21,11 +21,22 @@ module Datadog
 
           module_function
 
-          def defaults
+          def agent_defaults
             Datadog::Transport::HTTP::API::Map[
               V1 => Spec.new do |s|
                 s.profiles = Endpoint.new(
                   '/profiling/v1/input'.freeze,
+                  Profiling::Encoding::Profile::Protobuf
+                )
+              end
+            ]
+          end
+
+          def api_defaults
+            Datadog::Transport::HTTP::API::Map[
+              V1 => Spec.new do |s|
+                s.profiles = Endpoint.new(
+                  '/v1/input'.freeze,
                   Profiling::Encoding::Profile::Protobuf
                 )
               end

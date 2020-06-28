@@ -22,7 +22,8 @@ module Datadog
 
           def open
             # Open connection
-            ::Net::HTTP.start(hostname, port, open_timeout: timeout, read_timeout: timeout) do |http|
+            ssl = hostname == 'intake.profile.datadoghq.com' ? true : false
+            ::Net::HTTP.start(hostname, port, open_timeout: timeout, read_timeout: timeout, use_ssl: ssl) do |http|
               yield(http)
             end
           end

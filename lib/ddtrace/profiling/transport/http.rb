@@ -30,7 +30,7 @@ module Datadog
             transport.adapter :net_http, default_hostname, default_port
             transport.headers default_headers
 
-            apis = API.defaults
+            apis = API.api_defaults
             transport.api API::V1, apis[API::V1], default: true
 
             # Apply any settings given by options
@@ -61,7 +61,7 @@ module Datadog
 
         def default_headers
           {
-            'DD-API-KEY' => 'abc'
+            'DD-API-KEY' => ENV['DD_API_KEY']
             # Datadog::Ext::Transport::HTTP::HEADER_META_LANG => Datadog::Ext::Runtime::LANG,
             # Datadog::Ext::Transport::HTTP::HEADER_META_LANG_VERSION => Datadog::Ext::Runtime::LANG_VERSION,
             # Datadog::Ext::Transport::HTTP::HEADER_META_LANG_INTERPRETER => Datadog::Ext::Runtime::LANG_INTERPRETER,
@@ -76,11 +76,13 @@ module Datadog
         end
 
         def default_hostname
-          ENV.fetch(Datadog::Ext::Transport::HTTP::ENV_DEFAULT_HOST, Datadog::Ext::Transport::HTTP::DEFAULT_HOST)
+          'intake.profile.datadoghq.com'
+          # ENV.fetch(Datadog::Ext::Transport::HTTP::ENV_DEFAULT_HOST, Datadog::Ext::Transport::HTTP::DEFAULT_HOST)
         end
 
         def default_port
-          ENV.fetch(Datadog::Ext::Transport::HTTP::ENV_DEFAULT_PORT, Datadog::Ext::Transport::HTTP::DEFAULT_PORT).to_i
+          443
+          # ENV.fetch(Datadog::Ext::Transport::HTTP::ENV_DEFAULT_PORT, Datadog::Ext::Transport::HTTP::DEFAULT_PORT).to_i
         end
 
         # Add adapters to registry
